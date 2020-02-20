@@ -53,11 +53,24 @@
                 <span style="margin-left: 10px">{{ scope.row.email }}</span>
             </template>
             </el-table-column>
-             <el-table-column
+            <el-table-column
             label="电话"
            >
             <template slot-scope="scope">
                 <span style="margin-left: 10px">{{ scope.row.phone }}</span>
+            </template>
+            </el-table-column>
+            <el-table-column
+            label="用户状态"
+           >
+            <template slot-scope="scope">
+               <el-switch
+                v-model="scope.row.mgState"
+                active-color="#13ce66"
+                inactive-color="#ff4949"
+                @change="changeState(scope.row)"
+                >
+                </el-switch>
             </template>
             </el-table-column>
             <el-table-column label="操作">
@@ -94,6 +107,24 @@
                 <el-button type="danger" @click="dialogVisible = false">关闭</el-button>
             </span>
         </el-dialog>
+        <!-- 分配角色弹框 -->
+        <el-dialog title="分配角色" :visible.sync="dialogRoleVisible">
+            <el-form :model="usersForm">
+                <el-form-item  label="用户名称：" :label-width="formLabelWidth">
+                    <span>{{usersForm.name}}</span>
+                </el-form-item>
+                <el-form-item label="角色" :label-width="formLabelWidth">
+                <el-select v-model="usersForm.role" placeholder="请选择">
+                    <el-option disabled label="请选择" :value="choose"></el-option>
+                    <el-option v-for="(item,index) in roleList" :key="index"  :label="item.propName" :value="item.propCode"></el-option>
+                </el-select>
+                </el-form-item>
+            </el-form>
+            <div slot="footer" class="dialog-footer">
+                <el-button type="primary" @click="roleSave">保 存</el-button>
+                <el-button type="danger" @click="dialogRoleVisible = false">关 闭</el-button>
+            </div>
+        </el-dialog>
     </div>
 </template>
 
@@ -112,13 +143,39 @@
                 dialogTitle:'',
                 saveLoading:false,
                 dialogVisible:false,
+                dialogRoleVisible:false,//分配角色
+                formLabelWidth:'120px',
+                choose:-1,
                 usersForm:{
                     name:'',
                     age:'',
                     email:'',
                     phone:''
                 },
+                roleList:[
+                    {
+                    propCode: "00101",
+                    propName: "主管"
+                    },
+                    {
+                    propCode: "00102",
+                    propName: "测试角色"
+                    },
+                    {
+                    propCode: "00103",
+                    propName: "测试角色2"
+                    },
+                    {
+                    propCode: "001",
+                    propName: "超级管理员"
+                    },
+                    {
+                    propCode: "00104",
+                    propName: "test"
+                    }
+                ],
                 id:'',
+                roleId:'',
                 usersRules:{
                     name:[
                         { required: true, message: '姓名不能为空', trigger: 'blur' }
@@ -190,13 +247,25 @@
                 this.dialogVisible = false;
                this.usersForm = {};
             },
-            // 查看
-            handleCheck(row) {
-
-            },
             // X 掉弹框
             closed() {
                 this.$refs.usersForm.resetFields();
+            },
+            // 修改用户状态
+            changeState(row) {
+                console.log('row',row);
+            },
+            // 打开分配角色弹框
+            handleCheck(row) {
+                this.roleId = row.id;
+                this.usersForm = row;
+                this.dialogRoleVisible = true;
+            },
+            // 分配角色
+            roleSave() {
+                this.axios.put(`users/${this.roleId}`,this.usersForm);
+                this.getTableData();
+                this.dialogRoleVisible = false;
             }
 
         }
