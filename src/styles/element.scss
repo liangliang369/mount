@@ -1,0 +1,16 @@
+.el-dialog__header {
+    padding: 10px 20px;
+    color: #fff;
+    background: -mos-linear-gradient(right, #233549, #409efe);
+    background: -webkit-gradient(linear, left top, right top, from(#233549), to(#409efe));
+    background: linear-gradient(to right, #233549, #409efe);
+}
+.el-dialog__title {
+    color: #ffffff !important;
+}
+.el-dialog__footer {
+    padding: 10px 20px;
+    text-align: right;
+    background: #eaebef;
+    border-top: 0px solid #ccc;
+}

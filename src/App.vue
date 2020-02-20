@@ -6,6 +6,7 @@
 
 <style lang="scss">
 @import "./styles/reset";
+@import "./styles/element";
 #app {
  width: 100%;
  height: 100%;
